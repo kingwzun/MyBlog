@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客列表 - FriedFish's Blog</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <link rel="stylesheet" th:href="@{/css/me.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}">
+    <!--    <style>-->
+    <!--        div {-->
+    <!--            border: 1px solid #ff0000;-->
+    <!--        }-->
+    <!--    </style>-->
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragment :: menu(2)"></nav>
+
+<!--中间内容-->
+<div class="m-container m-padded-tb-big animated fadeIn">
+
+    <div class="ui container">
+
+        <!-- header -->
+        <div class="ui top attached padded segment m-font">
+            <div class="ui middle aligned two column grid">
+                <div class="left aligned column">
+                    <h2 class="ui teal header m-font">博客列表</h2>
+                </div>
+
+                <div class="right aligned column" style="font-size: 20px">
+                    共 <h2 class="ui orange header m-inline-block m-text-thin m-font" th:text="${blogCount}"></h2> 篇博客
+                </div>
+
+                <a th:if="${session.user} != null" th:href="@{/admin/blogs/input}" target="_blank"
+                   class="ui mini right floated blue button" style="margin-left: 1em">新增</a>
+            </div>
+        </div>
+
+        <th:block th:each="item : ${archiveMap}">
+            <h1 class="ui horizontal divider header" th:text="${item.key}"></h1>
+            <div class="ui segment">
+                <div class="ui padded vertical segment m-padded-tb-large" th:each="blog : ${item.value}">
+                    <div th:replace="_fragment :: content"></div>
+                </div>
+            </div>
+        </th:block>
+
+    </div>
+
+</div>
+
+<!--底部-->
+<footer th:replace="_fragment :: footer"></footer>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+
+<script th:replace="_fragment :: script"></script>
+
+</body>
+</html>

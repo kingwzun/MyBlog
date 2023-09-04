@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我 - FriedFish's Blog</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <link rel="stylesheet" th:href="@{/css/me.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragment :: menu(5)"></nav>
+
+<!--中间内容-->
+<div class="m-padded-tb-big animated fadeIn">
+
+    <div class="ui container">
+
+        <div class="ui stackable grid">
+
+            <div class="eleven wide column">
+                <div class="ui segment">
+                    <img src="" th:src="@{/images/about.jpg}" alt="" class="ui rounded image">
+                </div>
+            </div>
+
+            <div class="five wide column">
+
+                <div class="ui top attached segment">
+
+                    <h2 class="ui center aligned header m-font">关于我</h2>
+
+                </div>
+
+                <div class="ui attached segment">
+                    <p class="m-font m-text-lined m-text-thin" style="font-size: 20px">
+                        我是FriedFish（也就是炸鱼），一名大三学生，一直坚持做自己喜欢的事情。</p>
+                    <p class="m-font m-text-lined m-text-thin" style="font-size: 20px">
+                        学习是一件枯燥且无聊的事情，要走的路还有很远，共勉。</p>
+                </div>
+
+                <div class="ui attached segment">
+                    <div class="ui tag labels">
+                        <a class="ui teal tag label">C</a>
+                        <a class="ui teal tag label">C++</a>
+                        <a class="ui teal tag label">Java</a>
+                        <a class="ui teal tag label">Python</a>
+                        <a class="ui teal tag label">HTML</a>
+                    </div>
+                </div>
+
+                <div class="ui bottom attached segment">
+                    <div class="m-button-center">
+                        <a href="#" class="ui qq circular icon button" data-content="1905952141"
+                           data-position="bottom center">
+                            <i class="blue qq icon"></i>
+                        </a>
+
+                        <a href="#" class="ui wechat circular icon button">
+                            <i class="green wechat icon"></i>
+                        </a>
+
+                        <a href="https://www.youtube.com/channel/UCOe1iZhE1Id40t9urN5yFSQ"
+                           target="_blank" class="ui circular icon button">
+                            <i class="red youtube icon"></i>
+                        </a>
+                    </div>
+
+                    <div class="ui wechat-qr flowing popup transition hidden">
+                        <img src="" th:src="@{/images/wechat.jpg}" alt="" class="ui rounded image">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--底部-->
+<footer th:replace="_fragment :: footer"></footer>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+
+<script th:replace="_fragment :: script"></script>
+
+<script>
+    $('.wechat').popup({
+        popup: $('.wechat-qr'),
+        position: 'bottom center'
+    });
+
+    $('.qq').popup();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--游客导航-->
+<nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small" style="height: 8%">
+    <div class="ui inverted secondary stackable menu">
+        <h1 class="ui teal header item m-font">FriedFishOvO's Blog</h1>
+        <div class="right m-item item m-mobile-hide">
+            <form name="search" th:action="@{/search}" method="post" target="_blank">
+                <div class="ui icon inverted transparent input">
+                    <input type="text" name="query" th:value="${query}" placeholder="搜索文章">
+                    <i onclick="document.forms['search'].submit()" class="search link icon"></i>
+                </div>
+            </form>
+        </div>
+        <a th:href="@{/}" class="m-item item m-mobile-hide"
+           th:classappend="${n==1} ? 'active'"><i
+                class="home icon"></i>首页</a>
+        <a th:href="@{/archives}" class="m-item item m-mobile-hide"
+           th:classappend="${n==2} ? 'active'"><i
+                class="book icon"></i>博客列表</a>
+        <a th:href="@{/types/-1}" class="m-item item m-mobile-hide"
+           th:classappend="${n==3} ? 'active'"><i
+                class="idea icon"></i>分类</a>
+        <a th:href="@{/tags/-1}" class="m-item item m-mobile-hide"
+           th:classappend="${n==4} ? 'active'"><i
+                class="tags icon"></i>标签</a>
+        <a th:href="@{/about}" class="m-item item m-mobile-hide"
+           th:classappend="${n==5} ? 'active'"><i
+                class="info icon"></i>关于我</a>
+        <a th:href="@{/admin}" target="_blank" class="m-item item m-mobile-hide"
+           th:if="${session.user} == null"><i
+                class="arrow circle right icon"></i>登录</a>
+        <div class="right m-item m-mobile-hide menu" th:if="${session.user} != null">
+            <div class="ui dropdown item">
+                <div class="text">
+                    <img src="" th:src="@{${session.user.avatar}}" alt="" class="ui avatar image">
+                    <span th:text="${session.user.nickname}"></span>
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a th:href="@{/admin/blogs}" class="item">后台管理</a>
+                    <a th:href="@{/admin/logout}" class="item">注销</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+
+<!--管理员导航-->
+<nav th:fragment="admin(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small" style="height: 8%">
+    <div class="ui inverted secondary stackable menu">
+        <h1 class="ui teal header item m-font">后台管理</h1>
+        <div class="right m-item item m-mobile-hide">
+            <form name="search" th:action="@{/search}" method="post" target="_blank">
+                <div class="ui icon inverted transparent input">
+                    <input type="text" name="query" th:value="${query}" placeholder="搜索文章">
+                    <i onclick="document.forms['search'].submit()" class="search link icon"></i>
+                </div>
+            </form>
+        </div>
+        <a th:href="@{/admin/blogs}" class="m-item item m-mobile-hide"
+           th:classappend="${n==1} ? 'active'"><i
+                class="book icon"></i>博客</a>
+        <a th:href="@{/admin/types}" class="m-item item m-mobile-hide"
+           th:classappend="${n==2} ? 'active'"><i
+                class="idea icon"></i>分类</a>
+        <a th:href="@{/admin/tags}" class="m-item item m-mobile-hide"
+           th:classappend="${n==3} ? 'active'"><i
+                class="tags icon"></i>标签</a>
+        <a th:href="@{/admin}" target="_blank" class="m-item item m-mobile-hide"
+           th:if="${session.user} == null"><i
+                class="arrow circle right icon"></i>登录</a>
+        <div class="right m-item m-mobile-hide menu" th:if="${session.user} != null">
+            <div class="ui dropdown item">
+                <div class="text">
+                    <img src="" th:src="@{${session.user.avatar}}" alt="" class="ui avatar image">
+                    <span th:text="${session.user.nickname}"></span>
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a th:href="@{/}" class="item">返回首页</a>
+                    <a th:href="@{/admin/logout}" class="item">注销</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+
+<!--博客预览-->
+<div th:fragment="content" class="ui middle aligned mobile reversed stackable grid">
+
+    <div class="eleven wide column">
+        <h3 class="ui header">
+            <a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank" class="m-black"
+               th:text="${blog.title}"></a>
+        </h3>
+        <p class="m-text" th:text="${#strings.abbreviate(blog.content,100)}"></p>
+        <div class="ui grid">
+            <div class="eleven wide column">
+                <div class="ui horizontal link list">
+                    <div class="item">
+                        <img src="" th:src="@{/images/avatar.png}" alt=""
+                             class="ui avatar image">
+                        <div class="content">
+                            <a th:href="@{/about}"
+                               class="header m-text-thin m-text-lined m-blue">FriedFishOvO</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui horizontal link list">
+                    <div class="item">
+                        <i class="calendar icon"></i>
+                        <span class="m-blue"
+                              th:text="|&nbsp;${#dates.format(blog.updateTime,'yyyy-MM-dd HH:mm:ss')}|"></span>
+                    </div>
+                    <div class="item">
+                        <i class="eye icon"></i>
+                        <span class="m-blue" th:text="|&nbsp;${blog.views}|"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right aligned five wide column">
+                <a th:href="@{/types/{id}(id=${blog.type.id})}" target="_blank"
+                   class="ui teal label" th:text="${blog.type.name}"></a>
+            </div>
+
+            <div class="ui tag labels" style="display: inline">
+                <a th:href="@{/tags/{id}(id=${tag.id})}"
+                   class="ui tag label"
+                   th:classappend="${tag.id==activeTagId} ? 'teal'" th:each="tag : ${blog.tags}"
+                   th:text="${tag.name}"></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="five wide column">
+        <a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank">
+            <img src="" th:src="@{${blog.firstPicture}}" alt=""
+                 class="ui rounded image">
+        </a>
+    </div>
+
+</div>
+
+<!--footer-->
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-big" style="height: 30%">
+
+    <div class="ui center aligned container">
+
+        <div class="ui inverted divided stackable grid">
+            <div class="five wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <img src="" th:src="@{/images/avatar.png}" alt="" class="ui rounded image" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="five wide column">
+                <h4 class="ui inverted header m-text-thin">联系我</h4>
+                <div class="ui inverted link list">
+                    <span class="item m-padded-tb-small">QQ: 1905952141</span>
+                    <span class="item m-padded-tb-small">Email: kingwzun@gmail.com</span>
+                </div>
+            </div>
+
+            <div class="six wide column">
+                <h4 class="ui inverted header m-text-thin">关于本站</h4>
+                <span class="m-text-thin m-text-spaced m-opacity-mini m-text-lined">
+                    这是我的个人博客，记录日常学习和生活中的点点滴滴，欢迎您的访问，随缘更新。
+                </span>
+            </div>
+        </div>
+
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-thin m-text-spaced m-opacity-tiny">
+            <span>Made By FriedFishOvO</span>
+        </p>
+    </div>
+
+</footer>
+
+<!--script-->
+<script th:fragment="script">
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+
+    $('.message.close')
+        .on('click', function () {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        })
+    ;
+</script>
+
+</body>
+</html>

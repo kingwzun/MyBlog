@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="|${blog.title} - 博客详情|"></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+    <link rel="stylesheet" th:href="@{/css/typo.css}">
+    <link rel="stylesheet" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" th:href="@{/lib/prism/prism.css}">
+    <link rel="stylesheet" th:href="@{/lib/tocbot/tocbot.css}">
+    <link rel="stylesheet" th:href="@{/css/me.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}">
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragment :: menu(0)"></nav>
+
+<!--中间内容-->
+<div id="waypoint" class="m-padded-tb-big animated fadeIn">
+
+    <div class="ui container">
+
+        <div class="ui top attached segment">
+            <img src="" th:src="@{${blog.firstPicture}}" alt="" class="ui rounded image">
+        </div>
+
+        <div class="ui attached segment">
+
+            <div class="ui horizontal link list">
+                <div class="item">
+                    <img src="" th:src="@{${blog.user.avatar}}" alt=""
+                         class="ui avatar image">
+                    <div class="content">
+                        <a th:href="@{/about}" class="header" target="_blank" th:text="${blog.user.nickname}"></a>
+                    </div>
+                </div>
+                <div class="item">
+                    <i class="calendar icon"></i>
+                    <span class="m-blue" th:text="${#dates.format(blog.createTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+                </div>
+                <div class="item">
+                    <i class="eye icon"></i>
+                    <span class="m-blue" th:text="${blog.views}"></span>
+                </div>
+                <div class="item" style="margin-left: 44em" th:if="${session.user} != null">
+                    <a th:href="@{/admin/blogs/{id}/edit(id=${blog.id})}"
+                       class="ui mini green button">编辑</a>
+                    <a th:href="@{/admin/blogs/{id}/delete(id=${blog.id})}"
+                       class="ui mini red button">删除</a>
+                </div>
+            </div>
+
+            <div class="ui vertical link list">
+                <div class="row">
+                    <span>分类：</span>
+                    <a th:href="@{/types/{id}(id=${blog.type.id})}" target="_blank"
+                       class="ui teal label" th:text="${blog.type.name}"></a>
+                </div>
+
+                <div class="row m-margin-top-small">
+                    <span>标签：</span>
+                    <div class="ui tag labels" style="display: inline">
+                        <a th:href="@{/tags/{id}(id=${tag.id})}"
+                           class="ui tag label"
+                           target="_blank"
+                           th:classappend="${tag.id==activeTagId} ? 'teal'" th:each="tag : ${blog.tags}"
+                           th:text="${tag.name}"></a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 内容 -->
+        <div class="ui attached padded segment">
+
+            <div class="ui right aligned basic segment">
+                <div class="ui label" th:classappend="${blog.flag} == '原创' ? 'teal' : 'orange'"
+                     th:text="${blog.flag}"></div>
+            </div>
+
+            <h2 class="ui center aligned header" th:text="${blog.title}"></h2>
+
+            <div id="content" class="typo typo-selection js-toc-content m-padded-lr-responsive m-padded-tb"
+                 th:utext="${blog.content}">
+            </div>
+
+            <div class="m-padded-lr-responsive">
+                <div class="ui tag labels">
+                    <a th:href="@{/tags/{id}(id=${tag.id})}" target="_blank" class="ui teal tag label"
+                       th:each="tag : ${tags}">
+                        <span th:text="${tag.name}"></span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ui attached positive message">
+            <div class="ui middle aligned grid">
+                <ui class="list">
+                    <li>
+                        <span th:text="|最后一次编辑时间：${#dates.format(blog.updateTime,'yyyy-MM-dd HH:mm:ss')}|"></span>
+                    </li>
+                </ui>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 工具条 -->
+<div id="toolbar" class="m-padded m-fixed m-right-bottom">
+    <div class="ui vertical icon buttons">
+        <button type="button" class="ui toc teal button">目录</button>
+        <div id="toTop-button" class="ui icon button">
+            <i class="chevron up icon"></i>
+        </div>
+        <div id="toBottom-button" class="ui icon button">
+            <i class="chevron down icon"></i>
+        </div>
+    </div>
+</div>
+
+<!-- 显示目录 -->
+<div class="ui toc-container flowing popup transition hidden" style="width: 250px">
+    <ol class="js-toc">
+    </ol>
+</div>
+
+<!--底部-->
+<footer th:replace="_fragment :: footer"></footer>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.1/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery-scrollTo/2.1.3/jquery.scrollTo.js"></script>
+<script src="/lib/prism/prism.js"></script>
+<script src="/lib/tocbot/tocbot.min.js"></script>
+<script src="/lib/waypoints/jquery.waypoints.min.js"></script>
+
+<script>
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+
+    tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.js-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.js-toc-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+
+    $('.toc.button').popup({
+        popup: $('.toc-container.popup'),
+        on: 'click',
+        position: 'left center'
+    });
+
+    $('#toTop-button').click(function () {
+        $(window).scrollTo(0, 500); //返回最顶部
+    });
+
+    $('#toBottom-button').click(function () {
+        $(window).scrollTo(0x3f3f3f3f, 500); //返回最底部
+    });
+
+    var waypoint = new Waypoint({ //使用waypoint插件显示一个工具条
+        element: document.getElementById('waypoint'),
+        handler: function (direction) {
+            if (direction === 'down') {
+                $('#toolbar').show(100); //过渡时间100ms
+            } else {
+                $('#toolbar').hide(100);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
